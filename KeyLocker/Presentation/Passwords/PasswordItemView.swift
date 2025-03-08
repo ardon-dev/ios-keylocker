@@ -32,6 +32,14 @@ struct PasswordItemView: View {
                 alignment: .leading
             )
         }
+        .listRowSeparator(.hidden)
+        .padding(16)
+        .background(.bar)
+        .cornerRadius(16)
+        .frame(
+            maxWidth: .infinity,
+            alignment: .top
+        )
     }
 }
 

@@ -19,4 +19,5 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
+        .environment(\.managedObjectContext, KeyLockerCDataController.shared.context)
 }

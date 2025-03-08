@@ -21,18 +21,34 @@ struct PasswordListView: View {
     }
     
     var body: some View {
+        let filtered = viewModel.query.isEmpty
+        ? viewModel.passwords
+        : viewModel.passwords
+            .filter { $0.alias.localizedCaseInsensitiveContains(viewModel.query) }
+        
         NavigationStack {
             List {
-                ForEach($viewModel.passwords, id: \.id) { password in
-                    PasswordItemView(password: password.wrappedValue)
-                }
-                .onDelete { indexSet in
-                    for index in indexSet {
-                        let item = viewModel.passwords[index]
-                        viewModel.removePassword(item)
+                if filtered.isEmpty {
+                    Label("No keys found.", systemImage: "text.page.badge.magnifyingglass")
+                        .listRowSeparator(.hidden)
+                        .frame(alignment: .center)
+                } else {
+                    ForEach(filtered, id: \.id) { password in
+                        PasswordItemView(password: password)
+                    }
+                    .onDelete { indexSet in
+                        for index in indexSet {
+                            let item = viewModel.passwords[index]
+                            viewModel.removePassword(item)
+                        }
                     }
                 }
             }
+            .searchable(
+                text: $viewModel.query,
+                placement: .navigationBarDrawer(displayMode: .automatic),
+                prompt: Text("Search key")
+            )
             .listStyle(.plain)
             .navigationTitle("My keys")
             .navigationBarTitleDisplayMode(.inline)
