@@ -38,7 +38,11 @@ class NewPasswordViewModel: ObservableObject {
         let passwordDto = PasswordDto(
             id: UUID(),
             alias: self.alias,
-            password: self.password
+            password: self.password,
+            // TODO: Update these values
+            user: "",
+            icon: "",
+            lastUpdate: Date.now
         )
         let result = passwordRepository.insert(passwordDto)
         switch result {

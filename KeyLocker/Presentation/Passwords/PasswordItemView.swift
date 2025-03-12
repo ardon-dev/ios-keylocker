@@ -44,5 +44,5 @@ struct PasswordItemView: View {
 }
 
 #Preview {
-    PasswordItemView(password: PasswordDto(alias: "", password: ""))
+    PasswordItemView(password: PasswordDto())
 }

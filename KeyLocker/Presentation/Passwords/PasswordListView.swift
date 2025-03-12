@@ -9,47 +9,49 @@ import SwiftUI
 
 struct PasswordListView: View {
     
-    @ObservedObject
-    private var viewModel: PasswordListViewModel
-    
-    init() {
-        self.viewModel = PasswordListViewModel(
-            passwordRepository: PasswordRepositoryImpl(
-                controller: KeyLockerCDataController.shared
-            )
+    @StateObject
+    private var viewModel: PasswordListViewModel = PasswordListViewModel(
+        passwordRepository: PasswordRepositoryImpl(
+            controller: KeyLockerCDataController.shared
         )
-    }
+    )
     
     var body: some View {
-        let filtered = viewModel.query.isEmpty
-        ? viewModel.passwords
-        : viewModel.passwords
-            .filter { $0.alias.localizedCaseInsensitiveContains(viewModel.query) }
-        
         NavigationStack {
             List {
-                if filtered.isEmpty {
-                    Label("No keys found.", systemImage: "text.page.badge.magnifyingglass")
-                        .listRowSeparator(.hidden)
-                        .frame(alignment: .center)
+                if !viewModel.query.isEmpty {
+                    Label(
+                        "No keys found.",
+                        systemImage: "text.page.badge.magnifyingglass"
+                    )
+                    .listRowSeparator(.hidden)
+                    .frame(alignment: .center)
                 } else {
-                    ForEach(filtered, id: \.id) { password in
-                        PasswordItemView(password: password)
-                    }
-                    .onDelete { indexSet in
-                        for index in indexSet {
-                            let item = viewModel.passwords[index]
-                            viewModel.removePassword(item)
+                    ForEach(viewModel.filteredPasswords, id: \.id) { password in
+                        Button(action: {}) {
+                            PasswordItemView(password: password)
                         }
+                        .background(
+                            NavigationLink {
+                                PasswordDetailView(id: password.id)
+                            } label: {
+                                EmptyView()
+                            }
+                        )
+                        .listRowSeparator(.hidden)
+                        .listRowInsets(EdgeInsets())
                     }
+                    .onDelete(perform: viewModel.removePassword)
                 }
             }
+            .padding(.horizontal, 16)
             .searchable(
                 text: $viewModel.query,
                 placement: .navigationBarDrawer(displayMode: .automatic),
                 prompt: Text("Search key")
             )
             .listStyle(.plain)
+            .listRowSpacing(8)
             .navigationTitle("My keys")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

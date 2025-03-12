@@ -20,6 +20,16 @@ class PasswordListViewModel: ObservableObject {
     @Published
     var passwords: [PasswordDto] = []
     
+    var filteredPasswords: [PasswordDto]  {
+        if query.isEmpty {
+            return passwords
+        } else {
+            return passwords.filter{
+                $0.alias.localizedCaseInsensitiveContains(query)
+            }
+        }
+    }
+    
     @Published
     var query: String = ""
     
@@ -34,14 +44,21 @@ class PasswordListViewModel: ObservableObject {
         }
     }
     
-    func removePassword(_ password: PasswordDto) {
-        let result = passwordRepository.remove(password)
-        switch result {
-        case .success(let data):
-            print("Removed \(data)")
-        case .failure(let error):
-            print(error)
+    func removePassword(at indexSet: IndexSet) {
+        for index in indexSet {
+            let password = filteredPasswords[index]
+            let result = passwordRepository.remove(password)
+            switch result {
+            case .success(let data):
+                print("Removed \(data)")
+                query = ""
+                passwords.remove(at: index)
+            case .failure(let error):
+                print(error)
+            }
         }
+       
+       
     }
     
 }

@@ -15,5 +15,7 @@ protocol PasswordRepository {
     
     func remove(_ pasword: PasswordDto) -> Result<Bool, Error>
     
+    func fetch(id: UUID) -> Result<PasswordDto?, Error>
+    
 }
 

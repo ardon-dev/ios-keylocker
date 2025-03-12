@@ -10,16 +10,21 @@ import CoreData
 
 extension Password {
     func toDto() -> PasswordDto {
-        return PasswordDto(id: self.id ?? UUID(), alias: self.alias ?? "", password: self.password ?? "")
+        return PasswordDto(
+            id: self.id ?? UUID(),
+            alias: self.alias ?? "",
+            password: self.password ?? "",
+            user: self.user ?? "",
+            icon: self.icon ?? "",
+            lastUpdate: self.lastUpdate ?? Date.now,
+            objectID: self.objectID
+        )
     }
 }
 
 extension PasswordDto {
-    func toEntity(context: NSManagedObjectContext) -> Password {
-        let p = Password(context: context)
-        p.id = self.id
-        p.alias = self.alias
-        p.password = self.password
-        return p
+    func toEntity(context: NSManagedObjectContext) -> Password? {
+        guard let objectID = self.objectID else { return nil }
+        return context.object(with: objectID) as? Password
     }
 }

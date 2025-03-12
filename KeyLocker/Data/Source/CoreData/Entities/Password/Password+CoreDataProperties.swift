@@ -2,7 +2,7 @@
 //  Password+CoreDataProperties.swift
 //  KeyLocker
 //
-//  Created by Josue on 27/2/25.
+//  Created by Josue on 11/3/25.
 //
 //
 
@@ -16,9 +16,12 @@ extension Password {
         return NSFetchRequest<Password>(entityName: "Password")
     }
 
-    @NSManaged public var id: UUID?
     @NSManaged public var alias: String?
+    @NSManaged public var id: UUID?
     @NSManaged public var password: String?
+    @NSManaged public var user: String?
+    @NSManaged public var icon: String?
+    @NSManaged public var lastUpdate: Date?
 
 }
 

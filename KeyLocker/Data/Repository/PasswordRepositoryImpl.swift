@@ -41,10 +41,26 @@ class PasswordRepositoryImpl: PasswordRepository {
     
     func remove(_ password: PasswordDto) -> Result<Bool, any Error> {
         do {
-            let entity = password.toEntity(context: controller.context)
+            guard let entity = password.toEntity(context: controller.context) else {
+                return .failure(
+                    NSError(domain: "InvalidEntity", code: -1, userInfo: nil)
+                )
+            }
             controller.context.delete(entity)
-            try controller.context.save()
+            try controller.saveContext()
             return .success(true)
+        } catch {
+            return .failure(error)
+        }
+    }
+    
+    func fetch(id: UUID) -> Result<PasswordDto?, any Error> {
+        do {
+            let request: NSFetchRequest<Password> = Password.fetchRequest()
+            request.predicate = NSPredicate(format: "id == %@", id.uuidString)
+            request.fetchLimit = 1
+            let results = try controller.context.fetch(request)
+            return .success(results.first.map { element in element.toDto() })
         } catch {
             return .failure(error)
         }
