@@ -23,33 +23,47 @@ struct NewPasswordView: View {
         )
     }
     
+    @State
+    var isSecured = false
+    
     var body: some View {
+        
         VStack(alignment: .leading) {
-            Text("Enter your new Key").font(.title2).bold()
-            Spacer(minLength: 16)
-            
-            Text("Alias").font(.callout)
-            TextField("Alias", text: $viewModel.alias)
-                .textFieldStyle(.roundedBorder)
-            
-            Text("User or Email").font(.callout)
-            TextField("User or email", text: $viewModel.user)
-                .textFieldStyle(.roundedBorder)
-            
-            Text("Password").font(.callout)
-            SecureField("Password", text: $viewModel.password)
-                .textFieldStyle(.roundedBorder)
-          
-            Spacer(minLength: 24)
-            IconSelectorView(
-                icons: $viewModel.icons,
-                icon: $viewModel.icon
-            )
-            Button("Save") {
-                viewModel.insertPassword()
+            Form {
+                Text("Enter your new Key").font(.title2).bold()
+                    .listRowSeparator(.hidden)
+                TextField("Alias", text: $viewModel.alias)
+                TextField("User or email", text: $viewModel.user)
+                
+                HStack {
+                    if isSecured {
+                        TextField("Password", text: $viewModel.password)
+                    } else {
+                        SecureField("Password", text: $viewModel.password)
+                    }
+                    Image(systemName: isSecured ? "eye.slash" : "eye")
+                        .foregroundColor(.gray)
+                        .onTapGesture {
+                            isSecured = !isSecured
+                        }
+                }
+                
+                Section {
+                    IconSelectorView(
+                        icons: $viewModel.icons,
+                        icon: $viewModel.icon
+                    )
+                    .padding(.vertical, 8)
+                }
             }
-            .buttonStyle(.borderedProminent)
-
+        }
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button("Save", systemImage: "checkmark") {
+                    viewModel.insertPassword()
+                }
+                .disabled(!viewModel.formIsValid)
+            }
         }
         .alert("Exitoso", isPresented: $viewModel.insertPasswordSuccess) {
             Button("Ok") {
@@ -64,8 +78,6 @@ struct NewPasswordView: View {
             maxHeight: .infinity,
             alignment: .top
         )
-        .navigationTitle("New Key")
-        .padding(16)
     }
     
 }
@@ -96,18 +108,27 @@ struct IconSelectorView: View {
                     maxWidth: .infinity,
                     alignment: .leading
                 )
+            Spacer(minLength: 16)
             ScrollView {
                 LazyVGrid(columns: columns, spacing: 16) {
                     ForEach(icons, id: \.self) { item in
                         let selected = icon == item
-                        Button(action: {
-                            icon = item
-                        }) {
-                            Image(systemName: item)
-                                .frame(width: 24, height: 24)
-                                .foregroundColor(
-                                    selected ? .accentColor : .gray
-                                )
+                        if selected {
+                            Button(action: {
+                                icon = item
+                            }) {
+                                Image(systemName: item)
+                                    .frame(width: 24, height: 24)
+                            }
+                            .buttonStyle(.borderedProminent)
+                        } else {
+                            Button(action: {
+                                icon = item
+                            }) {
+                                Image(systemName: item)
+                                    .frame(width: 24, height: 24)
+                            }
+                            .buttonStyle(.bordered)
                         }
                     }
                 }

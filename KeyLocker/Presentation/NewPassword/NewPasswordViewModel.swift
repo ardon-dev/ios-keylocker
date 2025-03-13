@@ -42,6 +42,11 @@ class NewPasswordViewModel: ObservableObject {
     @Published
     var icon: String = ""
     
+    
+    var formIsValid: Bool {
+        !alias.isEmpty && !user.isEmpty && !password.isEmpty && !icon.isEmpty
+    }
+    
     func clearData() {
         alias = ""
         password = ""
