@@ -24,11 +24,27 @@ struct NewPasswordView: View {
     }
     
     var body: some View {
-        VStack {
-            Form {
-                TextField("Alias", text: $viewModel.alias)
-                TextField("Contraseña", text: $viewModel.password)
-            }
+        VStack(alignment: .leading) {
+            Text("Enter your new Key").font(.title2).bold()
+            Spacer(minLength: 16)
+            
+            Text("Alias").font(.callout)
+            TextField("Alias", text: $viewModel.alias)
+                .textFieldStyle(.roundedBorder)
+            
+            Text("User or Email").font(.callout)
+            TextField("User or email", text: $viewModel.user)
+                .textFieldStyle(.roundedBorder)
+            
+            Text("Password").font(.callout)
+            SecureField("Password", text: $viewModel.password)
+                .textFieldStyle(.roundedBorder)
+          
+            Spacer(minLength: 24)
+            IconSelectorView(
+                icons: $viewModel.icons,
+                icon: $viewModel.icon
+            )
             Button("Save") {
                 viewModel.insertPassword()
             }
@@ -49,8 +65,55 @@ struct NewPasswordView: View {
             alignment: .top
         )
         .navigationTitle("New Key")
+        .padding(16)
     }
     
+}
+
+struct IconSelectorView: View {
+    
+    private let columns = [
+        GridItem(.flexible()),
+        GridItem(.flexible()),
+        GridItem(.flexible()),
+        GridItem(.flexible()),
+        GridItem(.flexible())
+    ]
+    
+    @Binding
+    var icons: [String]
+    
+    @Binding
+    var icon: String
+    
+    var body: some View {
+        VStack {
+
+            Text("Choose an icon")
+                .font(.title2)
+                .bold()
+                .frame(
+                    maxWidth: .infinity,
+                    alignment: .leading
+                )
+            ScrollView {
+                LazyVGrid(columns: columns, spacing: 16) {
+                    ForEach(icons, id: \.self) { item in
+                        let selected = icon == item
+                        Button(action: {
+                            icon = item
+                        }) {
+                            Image(systemName: item)
+                                .frame(width: 24, height: 24)
+                                .foregroundColor(
+                                    selected ? .accentColor : .gray
+                                )
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 #Preview {

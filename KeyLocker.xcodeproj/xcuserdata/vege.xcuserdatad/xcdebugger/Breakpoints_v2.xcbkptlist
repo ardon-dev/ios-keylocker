@@ -30,8 +30,8 @@
             filePath = "KeyLocker/Data/Repository/PasswordRepositoryImpl.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "65"
-            endingLineNumber = "65"
+            startingLineNumber = "68"
+            endingLineNumber = "68"
             landmarkName = "fetch(id:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -46,8 +46,8 @@
             filePath = "KeyLocker/Data/Repository/PasswordRepositoryImpl.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "54"
-            endingLineNumber = "54"
+            startingLineNumber = "57"
+            endingLineNumber = "57"
             landmarkName = "remove(_:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -62,8 +62,8 @@
             filePath = "KeyLocker/Data/Repository/PasswordRepositoryImpl.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "44"
-            endingLineNumber = "44"
+            startingLineNumber = "47"
+            endingLineNumber = "47"
             landmarkName = "remove(_:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -78,8 +78,8 @@
             filePath = "KeyLocker/Data/Repository/PasswordRepositoryImpl.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "53"
-            endingLineNumber = "53"
+            startingLineNumber = "56"
+            endingLineNumber = "56"
             landmarkName = "remove(_:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -98,36 +98,6 @@
             endingLineNumber = "39"
             landmarkName = "saveContext()"
             landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "8AB322FC-2D00-403A-9FFE-DAABDC8AA5F6 - 571006c79ca7b72a"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "KeyLocker.KeyLockerCDataController.saveContext() throws -&gt; ()"
-                  moduleName = "KeyLocker.debug.dylib"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/vege/Documents/KeyLocker/KeyLocker/KeyLocker/Data/Source/CoreData/KeyLockerCDataController.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "39"
-                  endingLineNumber = "39">
-               </Location>
-               <Location
-                  uuid = "8AB322FC-2D00-403A-9FFE-DAABDC8AA5F6 - 571006c79ca7b72a"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "KeyLocker.KeyLockerCDataController.saveContext() throws -&gt; ()"
-                  moduleName = "KeyLocker.debug.dylib"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/vege/Documents/KeyLocker/KeyLocker/KeyLocker/Data/Source/CoreData/KeyLockerCDataController.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "39"
-                  endingLineNumber = "39">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

@@ -13,7 +13,7 @@ struct PasswordItemView: View {
     
     var body: some View {
         HStack {
-            Image(systemName: "key")
+            Image(systemName: password.icon)
             Spacer(minLength: 16)
             VStack {
                 Text(password.alias)
@@ -40,6 +40,9 @@ struct PasswordItemView: View {
             maxWidth: .infinity,
             alignment: .top
         )
+        .onAppear {
+            print(password.icon)
+        }
     }
 }
 

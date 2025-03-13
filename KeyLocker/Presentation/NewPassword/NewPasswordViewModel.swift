@@ -13,17 +13,40 @@ class NewPasswordViewModel: ObservableObject {
     
     init(passwordRepository: PasswordRepository) {
         self.passwordRepository = passwordRepository
+        self.icons = [
+            "key",
+            "key.2.on.ring.fill",
+            "keyboard",
+            "network.badge.shield.half.filled",
+            "checkmark.seal.fill",
+            "shield.lefthalf.filled.badge.checkmark",
+            "eye"
+        ]
+        self.icon = icons[0]
     }
     
     // MARK: Insert password
     
     @Published
     var alias: String = ""
+    
     @Published
     var password: String = ""
+    
+    @Published
+    var user: String = ""
+    
+    @Published
+    var icons: [String]
+    
+    @Published
+    var icon: String = ""
+    
     func clearData() {
         alias = ""
         password = ""
+        user = ""
+        icon = icons[0]
     }
     
     @Published
@@ -31,6 +54,7 @@ class NewPasswordViewModel: ObservableObject {
     
     @Published
     var insertPasswordError: String? = nil
+    
     @Published
     var showError: Bool = false
     
@@ -39,9 +63,8 @@ class NewPasswordViewModel: ObservableObject {
             id: UUID(),
             alias: self.alias,
             password: self.password,
-            // TODO: Update these values
-            user: "",
-            icon: "",
+            user: self.user,
+            icon: self.icon,
             lastUpdate: Date.now
         )
         let result = passwordRepository.insert(passwordDto)

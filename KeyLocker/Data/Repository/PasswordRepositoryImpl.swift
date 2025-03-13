@@ -22,6 +22,9 @@ class PasswordRepositoryImpl: PasswordRepository {
             newPassword.id = passwordDto.id
             newPassword.alias = passwordDto.alias
             newPassword.password = passwordDto.password
+            newPassword.user = passwordDto.user
+            newPassword.icon = passwordDto.icon
+            newPassword.lastUpdate = passwordDto.lastUpdate
             try self.controller.saveContext()
             return .success(true)
         } catch {
