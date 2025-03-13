@@ -29,7 +29,7 @@ struct PasswordDto: Identifiable {
     
     init() {
         self.id = UUID()
-        self.alias = ""
+        self.alias = "alias"
         self.password = ""
         self.user = ""
         self.icon = ""

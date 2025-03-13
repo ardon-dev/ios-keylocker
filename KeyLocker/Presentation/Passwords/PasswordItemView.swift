@@ -21,7 +21,10 @@ struct PasswordItemView: View {
                         maxWidth: .infinity,
                         alignment: .leading
                     )
-                Text("Last update: -------")
+                let date = formatDate(password.lastUpdate, format: "d MMM yyyy, h:mm a")
+                Text("Last update: \(date)")
+                    .font(.caption)
+                    .foregroundColor(.gray)
                     .frame(
                         maxWidth: .infinity,
                         alignment: .leading
@@ -32,10 +35,6 @@ struct PasswordItemView: View {
                 alignment: .leading
             )
         }
-        .listRowSeparator(.hidden)
-        .padding(16)
-        .background(.bar)
-        .cornerRadius(16)
         .frame(
             maxWidth: .infinity,
             alignment: .top

@@ -19,13 +19,18 @@ struct PasswordListView: View {
     var body: some View {
         NavigationStack {
             List {
-                if !viewModel.query.isEmpty {
-                    Label(
-                        "No keys found.",
-                        systemImage: "text.page.badge.magnifyingglass"
-                    )
+                if viewModel.filteredPasswords.isEmpty {
+                    VStack(alignment: .center) {
+                        Image(systemName: "text.page.badge.magnifyingglass")
+                            .imageScale(.large)
+                            .foregroundColor(.secondary)
+                        Text("No keys")
+                            .font(.callout)
+                            .foregroundColor(.secondary)
+                            .padding(.top, 4)
+                    }
+                    .frame(maxWidth: .infinity)
                     .listRowSeparator(.hidden)
-                    .frame(alignment: .center)
                 } else {
                     ForEach(viewModel.filteredPasswords, id: \.id) { password in
                         Button(action: {}) {
@@ -38,20 +43,16 @@ struct PasswordListView: View {
                                 EmptyView()
                             }
                         )
-                        .listRowSeparator(.hidden)
-                        .listRowInsets(EdgeInsets())
                     }
                     .onDelete(perform: viewModel.removePassword)
                 }
             }
-            .padding(.horizontal, 16)
             .searchable(
                 text: $viewModel.query,
                 placement: .navigationBarDrawer(displayMode: .automatic),
                 prompt: Text("Search key")
             )
             .listStyle(.plain)
-            .listRowSpacing(8)
             .navigationTitle("My keys")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
