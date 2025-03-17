@@ -16,7 +16,7 @@ class PasswordDetailViewModel: ObservableObject {
     }
     
     @Published
-    var visible: Bool = true
+    var visible: Bool = false
     
     @Published
     var error: String? = nil

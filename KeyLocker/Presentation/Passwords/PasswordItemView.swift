@@ -13,17 +13,19 @@ struct PasswordItemView: View {
     
     var body: some View {
         HStack {
-            Image(systemName: password.icon)
+            Image(systemName: password.icon.isEmpty ? "key" : password.icon)
+                .imageScale(.large)
             Spacer(minLength: 16)
             VStack {
                 Text(password.alias)
+                    .font(.headline)
                     .frame(
                         maxWidth: .infinity,
                         alignment: .leading
                     )
                 let date = formatDate(password.lastUpdate, format: "d MMM yyyy, h:mm a")
                 Text("Last update: \(date)")
-                    .font(.caption)
+                    .font(.callout)
                     .foregroundColor(.gray)
                     .frame(
                         maxWidth: .infinity,

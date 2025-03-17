@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import LocalAuthentication
 
 struct PasswordDetailView: View {
     
@@ -14,6 +15,8 @@ struct PasswordDetailView: View {
     @ObservedObject
     private var viewModel: PasswordDetailViewModel
     
+    private var authHelper: AuthenticationHelper
+    
     init(id: UUID) {
         self.id = id
         self.viewModel = PasswordDetailViewModel(
@@ -21,59 +24,103 @@ struct PasswordDetailView: View {
                 controller: KeyLockerCDataController.shared
             )
         )
+        self.authHelper = AuthenticationHelper()
     }
     
     var body: some View {
         List {
-            Section {
+            Section(header: Label("Password", systemImage: viewModel.currentPassword?.icon ?? "key.fill")) {
                 PasswordDetailHeadView(
                     password: viewModel.currentPassword,
-                    visible: viewModel.visible
+                    visible: $viewModel.visible,
+                    authHelper: self.authHelper
                 )
             }
-            .listRowSeparator(.hidden)
-
             
-            Section {
+            Section(header: Label("Information", systemImage: "info.circle.fill")) {
                 PasswordDetailInfoView(password: viewModel.currentPassword)
-                    .padding(.top, 16)
             }
-            .listRowSeparator(.hidden)
+            
+            Section(header: Label("Update history", systemImage: "arrow.clockwise.circle.fill")) {
+                ForEach(["Update 1", "Update 2"], id: \.self) { update in
+                    ModificationItemView()
+                }
+            }
+            
         }
-        .listStyle(.plain)
         .navigationTitle(viewModel.currentPassword?.alias ?? "")
+        .toolbar {
+            ToolbarItem {
+                Button(
+                    "",
+                    systemImage: viewModel.visible ? "lock.open" : "lock"
+                ) {
+                    if viewModel.visible {
+                        viewModel.visible = false
+                    } else {
+                        authHelper.authenticate { result in
+                            switch result {
+                            case .success(_):
+                                print("Authenticated")
+                                viewModel.visible = true
+                            case .failure(let error):
+                                print(error.localizedDescription)
+                                viewModel.visible = false
+                            }
+                        }
+                    }
+                }
+            }
+        }
         .onAppear {
             viewModel.getPassword(id)
         }
+        .onDisappear {
+            viewModel.visible = false
+        }
     }
+    
 }
 
 struct PasswordDetailHeadView: View {
     
     var password: PasswordDto? = nil
-    var visible: Bool = false
+
+    @Binding
+    var visible: Bool
+    
+    var authHelper: AuthenticationHelper
     
     var body: some View {
         VStack {
-            if visible {
-                HStack {
-                    Button(action: {}) {
-                        Image(systemName: "square.and.pencil")
-                            .frame(height: 24)
-                    }
-                    .buttonStyle(.borderedProminent)
-                    
-                    Button(action: {}) {
-                        Image(systemName: "document.on.document")
-                            .frame(height: 24)
-                    }
-                    .buttonStyle(.borderedProminent)
-                }
-            }
-            Spacer(minLength: 16)
             Text(visible ? password?.password ?? "******" : "******")
                 .font(.largeTitle.bold())
                 .frame(maxWidth: .infinity)
+            
+            if visible {
+                HStack {
+                    Button(action: {
+                    }) {
+                        HStack {
+                            Image(systemName: "square.and.pencil")
+                                .frame(height: 24)
+                            Text("Edit")
+                        }
+                        .frame(maxWidth: .infinity, alignment: .center)
+                    }
+                    .buttonStyle(.bordered)
+                    
+                    Button(action: {}) {
+                        HStack {
+                            Image(systemName: "document.on.document")
+                                .frame(height: 24)
+                            Text("Copy")
+                        }
+                        .frame(maxWidth: .infinity, alignment: .center)
+                    }
+                    .buttonStyle(.bordered)
+                }
+            }
         }
         .padding(16)
         .frame(
@@ -87,27 +134,12 @@ struct PasswordDetailInfoView: View {
     var password: PasswordDto? = nil
     
     var body: some View {
-        VStack {
-            Text("Email or username")
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .font(.headline)
-            Text(password?.user ?? "User")
-                .frame(maxWidth: .infinity, alignment: .leading)
-            Spacer(minLength: 16)
-            Text("Last update")
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .font(.headline)
-            Text(password?.lastUpdate.description ?? "Date")
-                .frame(maxWidth: .infinity, alignment: .leading)
-            Spacer(minLength: 16)
-            Text("Update history")
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .font(.headline)
-            ForEach(["Update 1", "Update 2"], id: \.self) { update in
-                PasswordItemView(password: PasswordDto())
-            }
-            Spacer().background(.red)
-        }
+        LabeledContent("User", value: password?.user ?? "user")
+        let date = formatDate(
+            password?.lastUpdate ?? Date.now,
+            format: "d MMM yyyy, h:mm a"
+        )
+        LabeledContent("Last update", value: date)
     }
 }
 
