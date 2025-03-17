@@ -7,5 +7,13 @@
         <attribute name="lastUpdate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="password" optional="YES" attributeType="String"/>
         <attribute name="user" optional="YES" attributeType="String"/>
+        <relationship name="password_modifications" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="PasswordModification"/>
+    </entity>
+    <entity name="PasswordModification" representedClassName="PasswordModification" syncable="YES">
+        <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="password" optional="YES" attributeType="String"/>
+        <attribute name="passwordId" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <relationship name="modification_password" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Password"/>
     </entity>
 </model>
