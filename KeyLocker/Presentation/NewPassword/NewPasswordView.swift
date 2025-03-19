@@ -33,7 +33,10 @@ struct NewPasswordView: View {
                 Text("Enter your new Key").font(.title2).bold()
                     .listRowSeparator(.hidden)
                 TextField("Alias", text: $viewModel.alias)
+                    .keyboardType(.default)
                 TextField("User or email", text: $viewModel.user)
+                    .autocapitalization(.none)
+                    .keyboardType(.emailAddress)
                 
                 HStack {
                     if isSecured {

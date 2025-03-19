@@ -75,11 +75,23 @@ struct PasswordDetailView: View {
         .navigationTitle(viewModel.currentPassword?.alias ?? "")
         .toolbar {
             ToolbarItem {
-                Button("", systemImage: "pencil") {}
-            }
-            
-            ToolbarItem {
-                
+                Button("Edit", systemImage: "pencil") {
+                    if viewModel.visible {
+                        viewModel.isEditingInfo = true
+                    } else {
+                        authHelper.authenticate { result in
+                            switch result {
+                            case .success(_):
+                                viewModel.visible = true
+                                viewModel.isEditingInfo = true
+                            case .failure(let error):
+                                viewModel.visible = false
+                                viewModel.error = error.localizedDescription
+                                viewModel.showError = true
+                            }
+                        }
+                    }
+                }
             }
         }
         .sheet(
@@ -92,11 +104,25 @@ struct PasswordDetailView: View {
                 password: viewModel.currentPassword ?? PasswordDto()
             )
         }
+        .sheet(
+            isPresented: $viewModel.isEditingInfo,
+            onDismiss: {
+                viewModel.getPassword(self.id)
+            }
+        ) {
+            EditInfoView(password: viewModel.currentPassword ?? PasswordDto())
+        }
         .onAppear {
             viewModel.getPassword(id)
         }
         .onDisappear {
             viewModel.visible = false
+        }
+        .alert(viewModel.error ?? "", isPresented: $viewModel.showError) {
+            Button("Ok") {
+                viewModel.showError = false
+                viewModel.error = nil
+            }
         }
         
         Button(
@@ -112,8 +138,9 @@ struct PasswordDetailView: View {
                         print("Authenticated")
                         viewModel.visible = true
                     case .failure(let error):
-                        print(error.localizedDescription)
                         viewModel.visible = false
+                        viewModel.error = error.localizedDescription
+                        viewModel.showError = true
                     }
                 }
             }
@@ -192,7 +219,7 @@ struct PasswordDetailInfoView: View {
     var password: PasswordDto? = nil
     
     var body: some View {
-        LabeledContent("User", value: password?.user ?? "user")
+        LabeledContent("User", value: password?.user ?? "")
         let date = formatDate(
             password?.lastUpdate ?? Date.now,
             format: "d MMM yyyy, h:mm a"

@@ -13,22 +13,10 @@ class EditPasswordViewModel: ObservableObject {
     private var passwordRepository: PasswordRepository
     
     @Published
-    var alias: String = ""
-    
-    @Published
     var password: String = ""
     
     @Published
-    var user: String = ""
-    
-    @Published
     var isSecured: Bool = false
-    
-    @Published
-    var icons: [String]
-    
-    @Published
-    var icon: String = ""
     
     @Published
     var success: Bool = false
@@ -44,21 +32,9 @@ class EditPasswordViewModel: ObservableObject {
         user: String,
         icon: String
     ) {
-        self.alias = alias
         self.password = password
-        self.user = user
         self.passwordModificationRepository = passwordModificationRepository
         self.passwordRepository = passwordRepository
-        self.icons = [
-            "key",
-            "key.2.on.ring.fill",
-            "keyboard",
-            "network.badge.shield.half.filled",
-            "checkmark.seal.fill",
-            "shield.lefthalf.filled.badge.checkmark",
-            "eye"
-        ]
-        self.icon = icon
     }
     
     func addModification(currentPassword: PasswordDto) {

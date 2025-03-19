@@ -75,6 +75,9 @@ class PasswordRepositoryImpl: PasswordRepository {
             request.predicate = NSPredicate(format: "id == %@", password.id.uuidString)
             let results = try controller.context.fetch(request)
             if let passwordToUpdate = results.first {
+                passwordToUpdate.alias = password.alias
+                passwordToUpdate.user = password.user
+                passwordToUpdate.icon = password.icon
                 passwordToUpdate.password = password.password
                 passwordToUpdate.lastUpdate = password.lastUpdate
                 try controller.context.save()

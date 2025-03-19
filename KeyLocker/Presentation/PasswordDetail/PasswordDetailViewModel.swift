@@ -28,7 +28,13 @@ class PasswordDetailViewModel: ObservableObject {
     var error: String? = nil
     
     @Published
+    var showError: Bool = false
+    
+    @Published
     var isEditing: Bool = false
+    
+    @Published
+    var isEditingInfo: Bool = false
     
     /* Current password */
     
@@ -39,10 +45,12 @@ class PasswordDetailViewModel: ObservableObject {
         let result = passwordRepository.fetch(id: id)
         switch result {
         case .success(let data):
+            showError = false
             currentPassword = data
             fetchModifications(passwordId: currentPassword?.id ?? UUID())
         case .failure(let error):
             self.error = error.localizedDescription
+            showError = true
         }
     }
     
@@ -57,9 +65,11 @@ class PasswordDetailViewModel: ObservableObject {
         )
         switch result {
         case .success(let data):
+            showError = false
             modifications = data.reversed()
         case .failure(let error):
-            print(error.localizedDescription)
+            self.error = error.localizedDescription
+            showError = true
         }
     }
     
@@ -69,11 +79,13 @@ class PasswordDetailViewModel: ObservableObject {
         let result = passwordModificationRepository.delete(modification)
         switch result {
         case .success(let data):
+            showError = false
             print("Removed \(data)")
             let index: Int = modifications.firstIndex(where: { $0.id == modification.id }) ?? -1
             modifications.remove(at: index)
         case .failure(let error):
-            print(error)
+            self.error = error.localizedDescription
+            showError = true
         }
     }
     
