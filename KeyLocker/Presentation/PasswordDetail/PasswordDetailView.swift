@@ -75,25 +75,11 @@ struct PasswordDetailView: View {
         .navigationTitle(viewModel.currentPassword?.alias ?? "")
         .toolbar {
             ToolbarItem {
-                Button(
-                    "",
-                    systemImage: viewModel.visible ? "lock.open" : "lock"
-                ) {
-                    if viewModel.visible {
-                        viewModel.visible = false
-                    } else {
-                        authHelper.authenticate { result in
-                            switch result {
-                            case .success(_):
-                                print("Authenticated")
-                                viewModel.visible = true
-                            case .failure(let error):
-                                print(error.localizedDescription)
-                                viewModel.visible = false
-                            }
-                        }
-                    }
-                }
+                Button("", systemImage: "pencil") {}
+            }
+            
+            ToolbarItem {
+                
             }
         }
         .sheet(
@@ -112,6 +98,27 @@ struct PasswordDetailView: View {
         .onDisappear {
             viewModel.visible = false
         }
+        
+        Button(
+            viewModel.visible ? "Lock" : "Unlock",
+            systemImage: viewModel.visible ? "lock.open" : "lock"
+        ) {
+            if viewModel.visible {
+                viewModel.visible = false
+            } else {
+                authHelper.authenticate { result in
+                    switch result {
+                    case .success(_):
+                        print("Authenticated")
+                        viewModel.visible = true
+                    case .failure(let error):
+                        print(error.localizedDescription)
+                        viewModel.visible = false
+                    }
+                }
+            }
+        }
+        .padding(.top, 8)
     }
     
     private func handleDelete(for modification: ModificationDto) {
