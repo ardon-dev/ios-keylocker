@@ -15,12 +15,15 @@ struct NewPasswordView: View {
     @ObservedObject
     private var viewModel: NewPasswordViewModel
     
+    private var authHelper: AuthenticationHelper
+    
     init() {
         self.viewModel = NewPasswordViewModel(
             passwordRepository: PasswordRepositoryImpl(
                 controller: KeyLockerCDataController.shared
             )
         )
+        self.authHelper = AuthenticationHelper()
     }
     
     @State
@@ -54,18 +57,33 @@ struct NewPasswordView: View {
                    
                     Text("Password").padding(.top, 8)
                     HStack {
-                        if isSecured {
-                            TextField("", text: $viewModel.password)
-                                .textFieldStyle(.roundedBorder)
-                        } else {
-                            SecureField("", text: $viewModel.password)
-                                .textFieldStyle(.roundedBorder)
-                        }
-                        Image(systemName: isSecured ? "eye.slash" : "eye")
-                            .foregroundColor(.gray)
-                            .onTapGesture {
-                                isSecured = !isSecured
+                        ZStack(alignment: .trailing) {
+                            if isSecured {
+                                TextField("", text: $viewModel.password)
+                                    .textFieldStyle(.roundedBorder)
+                            } else {
+                                SecureField("", text: $viewModel.password)
+                                    .textFieldStyle(.roundedBorder)
                             }
+                            Image(systemName: isSecured ? "eye.slash" : "eye")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 24, height: 24)
+                                .foregroundColor(.gray)
+                                .onTapGesture {
+                                    isSecured = !isSecured
+                                }
+                                .padding(.trailing, 8)
+                        }
+                      
+                        Button(action: {
+                            let randomPassword = generateRandomPassword()
+                            viewModel.password = randomPassword
+                            isSecured = true
+                        }) {
+                            Image(systemName: "shuffle")
+                        }
+                        .buttonStyle(.bordered)
                     }
                 }
               
