@@ -17,5 +17,7 @@ protocol PasswordRepository {
     
     func fetch(id: UUID) -> Result<PasswordDto?, Error>
     
+    func update(_ password: PasswordDto) -> Result<Bool, Error>
+    
 }
 

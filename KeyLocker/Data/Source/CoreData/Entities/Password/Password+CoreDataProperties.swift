@@ -22,7 +22,7 @@ extension Password {
     @NSManaged public var lastUpdate: Date?
     @NSManaged public var password: String?
     @NSManaged public var user: String?
-    @NSManaged public var password_modifications: NSSet?
+    @NSManaged public var password_modifications: Set<PasswordModification>?
 
 }
 

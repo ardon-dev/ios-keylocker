@@ -14,6 +14,6 @@
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="password" optional="YES" attributeType="String"/>
         <attribute name="passwordId" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
-        <relationship name="modification_password" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Password"/>
+        <relationship name="modification_password" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Password"/>
     </entity>
 </model>

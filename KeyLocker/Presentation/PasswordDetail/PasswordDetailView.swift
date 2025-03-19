@@ -22,6 +22,9 @@ struct PasswordDetailView: View {
         self.viewModel = PasswordDetailViewModel(
             passwordRepository: PasswordRepositoryImpl(
                 controller: KeyLockerCDataController.shared
+            ),
+            passwordModificationRepository: PasswordModificationRepositoryImpl(
+                controller: KeyLockerCDataController.shared
             )
         )
         self.authHelper = AuthenticationHelper()
@@ -29,24 +32,45 @@ struct PasswordDetailView: View {
     
     var body: some View {
         List {
-            Section(header: Label("Password", systemImage: viewModel.currentPassword?.icon ?? "key.fill")) {
+            Section(
+                header: Label(
+                    "Password",
+                    systemImage: viewModel.currentPassword?.icon ?? "key.fill"
+                )
+            ) {
                 PasswordDetailHeadView(
                     password: viewModel.currentPassword,
                     visible: $viewModel.visible,
-                    authHelper: self.authHelper
+                    authHelper: self.authHelper,
+                    onEdit: { viewModel.isEditing = true }
                 )
             }
             
-            Section(header: Label("Information", systemImage: "info.circle.fill")) {
+            Section(
+                header: Label("Information", systemImage: "info.circle.fill")
+            ) {
                 PasswordDetailInfoView(password: viewModel.currentPassword)
             }
             
-            Section(header: Label("Update history", systemImage: "arrow.clockwise.circle.fill")) {
-                ForEach(["Update 1", "Update 2"], id: \.self) { update in
-                    ModificationItemView()
+            Section(
+                header: Label(
+                    "Update history",
+                    systemImage: "arrow.clockwise.circle.fill"
+                )
+            ) {
+                ForEach(viewModel.modifications, id: \.id) { mod in
+                    ModificationItemView(
+                        visible: $viewModel.visible,
+                        modification: mod
+                    )
+                    .swipeActions(edge: .trailing) {
+                        Button("", systemImage: "trash") {
+                            handleDelete(for: mod)
+                        }
+                        .tint(.red)
+                    }
                 }
             }
-            
         }
         .navigationTitle(viewModel.currentPassword?.alias ?? "")
         .toolbar {
@@ -72,11 +96,36 @@ struct PasswordDetailView: View {
                 }
             }
         }
+        .sheet(
+            isPresented: $viewModel.isEditing,
+            onDismiss: {
+                viewModel.getPassword(self.id)
+            }
+        ) {
+            EditPasswordView(
+                password: viewModel.currentPassword ?? PasswordDto()
+            )
+        }
         .onAppear {
             viewModel.getPassword(id)
         }
         .onDisappear {
             viewModel.visible = false
+        }
+    }
+    
+    private func handleDelete(for modification: ModificationDto) {
+        if viewModel.visible {
+            viewModel.removeModification(modification)
+        } else {
+            authHelper.authenticate { result in
+                switch result {
+                case .success(_):
+                    viewModel.removeModification(modification)
+                case .failure(let error):
+                    print(error.localizedDescription)
+                }
+            }
         }
     }
     
@@ -91,15 +140,17 @@ struct PasswordDetailHeadView: View {
     
     var authHelper: AuthenticationHelper
     
+    var onEdit: () -> Void
+    
     var body: some View {
         VStack {
             Text(visible ? password?.password ?? "******" : "******")
                 .font(.largeTitle.bold())
                 .frame(maxWidth: .infinity)
-            
             if visible {
                 HStack {
                     Button(action: {
+                        onEdit()
                     }) {
                         HStack {
                             Image(systemName: "square.and.pencil")

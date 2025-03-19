@@ -100,7 +100,6 @@ struct IconSelectorView: View {
     
     var body: some View {
         VStack {
-
             Text("Choose an icon")
                 .font(.title2)
                 .bold()

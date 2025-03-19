@@ -69,4 +69,22 @@ class PasswordRepositoryImpl: PasswordRepository {
         }
     }
     
+    func update(_ password: PasswordDto) -> Result<Bool, any Error> {
+        do {
+            let request: NSFetchRequest<Password> = Password.fetchRequest()
+            request.predicate = NSPredicate(format: "id == %@", password.id.uuidString)
+            let results = try controller.context.fetch(request)
+            if let passwordToUpdate = results.first {
+                passwordToUpdate.password = password.password
+                passwordToUpdate.lastUpdate = password.lastUpdate
+                try controller.context.save()
+                return .success(true)
+            } else {
+                return .failure(NSError(domain: "No password found.", code: 1))
+            }
+        } catch {
+            return .failure(error)
+        }
+    }
+    
 }
