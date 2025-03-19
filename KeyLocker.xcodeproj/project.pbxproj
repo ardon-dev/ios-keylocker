@@ -6,11 +6,6 @@
 	objectVersion = 77;
 	objects = {
 
-/* Begin PBXBuildFile section */
-		8FCE0B5D2D88C863009E7FDE /* PasswordModification+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FCE0B5B2D88C863009E7FDE /* PasswordModification+CoreDataClass.swift */; };
-		8FCE0B5E2D88C863009E7FDE /* PasswordModification+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FCE0B5C2D88C863009E7FDE /* PasswordModification+CoreDataProperties.swift */; };
-/* End PBXBuildFile section */
-
 /* Begin PBXContainerItemProxy section */
 		8F56BDB32D6FAE2E00CB21FA /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -32,8 +27,6 @@
 		8F56BDA22D6FAE2C00CB21FA /* KeyLocker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KeyLocker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8F56BDB22D6FAE2E00CB21FA /* KeyLockerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KeyLockerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8F56BDBC2D6FAE2E00CB21FA /* KeyLockerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KeyLockerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		8FCE0B5B2D88C863009E7FDE /* PasswordModification+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "PasswordModification+CoreDataClass.swift"; path = "KeyLocker/Data/Source/CoreData/Entities/Modification/PasswordModification+CoreDataClass.swift"; sourceTree = "<group>"; };
-		8FCE0B5C2D88C863009E7FDE /* PasswordModification+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "PasswordModification+CoreDataProperties.swift"; path = "KeyLocker/Data/Source/CoreData/Entities/Modification/PasswordModification+CoreDataProperties.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -82,8 +75,6 @@
 		8F56BD992D6FAE2C00CB21FA = {
 			isa = PBXGroup;
 			children = (
-				8FCE0B5B2D88C863009E7FDE /* PasswordModification+CoreDataClass.swift */,
-				8FCE0B5C2D88C863009E7FDE /* PasswordModification+CoreDataProperties.swift */,
 				8F56BDA42D6FAE2C00CB21FA /* KeyLocker */,
 				8F56BDB52D6FAE2E00CB21FA /* KeyLockerTests */,
 				8F56BDBF2D6FAE2E00CB21FA /* KeyLockerUITests */,
@@ -245,8 +236,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8FCE0B5D2D88C863009E7FDE /* PasswordModification+CoreDataClass.swift in Sources */,
-				8FCE0B5E2D88C863009E7FDE /* PasswordModification+CoreDataProperties.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

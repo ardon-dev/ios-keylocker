@@ -18,6 +18,9 @@ class PasswordListViewModel: ObservableObject {
     /* Password list */
     
     @Published
+    var query: String = ""
+    
+    @Published
     var passwords: [PasswordDto] = []
     
     var filteredPasswords: [PasswordDto]  {
@@ -29,9 +32,6 @@ class PasswordListViewModel: ObservableObject {
             }
         }
     }
-    
-    @Published
-    var query: String = ""
     
     func getPasswords() {
         let result = passwordRepository.fetchAll()

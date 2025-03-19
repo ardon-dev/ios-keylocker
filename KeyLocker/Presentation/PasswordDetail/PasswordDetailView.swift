@@ -32,86 +32,52 @@ struct PasswordDetailView: View {
     
     var body: some View {
         List {
-            Section(
-                header: Label{
-                    Text(viewModel.currentPassword?.alias ?? "Alias")
-                } icon: {
-                    Image(viewModel.currentPassword?.icon ?? "telegram")
-                        .resizable()
-                        .frame(width: 14, height: 14)
-                        
-                }
-            ) {
-                PasswordDetailHeadView(
-                    password: viewModel.currentPassword,
-                    visible: $viewModel.visible,
-                    authHelper: self.authHelper,
-                    onEdit: { viewModel.isEditing = true }
-                )
-            }
             
-            Section(
-                header: Label("Information", systemImage: "info.circle")
-            ) {
-                PasswordDetailInfoView(password: viewModel.currentPassword)
-            }
-            
-            Section(
-                header: Label(
-                    "Update history",
-                    systemImage: "clock.arrow.trianglehead.counterclockwise.rotate.90"
-                )
-            ) {
-                ForEach(viewModel.modifications, id: \.id) { mod in
-                    ModificationItemView(
-                        visible: $viewModel.visible,
-                        modification: mod
-                    )
-                    .swipeActions(edge: .trailing) {
-                        Button("", systemImage: "trash") {
-                            handleDelete(for: mod)
-                        }
-                        .tint(.red)
-                    }
+            // MARK: Key section
+            DetailKeySectionView(
+                visible: $viewModel.visible,
+                alias: viewModel.currentPassword?.alias ?? "",
+                icon: viewModel.currentPassword?.icon ?? "facebook",
+                password: viewModel.currentPassword?.password ?? "",
+                onEdit: {
+                    viewModel.isEditing = true
                 }
-            }
+            )
+            
+            // MARK: Information section
+            DetailInfoSectionView(
+                user: viewModel.currentPassword?.user ?? "------",
+                lastUpdate: viewModel.currentPassword?.lastUpdate ?? Date.now
+            )
+            
+            // MARK: Update history section
+            DetailUpdateHistorySectionView(
+                visible: $viewModel.visible,
+                modifications: viewModel.modifications,
+                onDelete: { modification in
+                    handleDelete(for: modification)
+                }
+            )
         }
+        // MARK: Toolbar
         .toolbar {
             ToolbarItem {
                 Button("Edit", systemImage: "pencil") {
-                    if viewModel.visible {
-                        viewModel.isEditingInfo = true
-                    } else {
-                        authHelper.authenticate { result in
-                            switch result {
-                            case .success(_):
-                                viewModel.visible = true
-                                viewModel.isEditingInfo = true
-                            case .failure(let error):
-                                viewModel.visible = false
-                                viewModel.error = error.localizedDescription
-                                viewModel.showError = true
-                            }
-                        }
-                    }
+                    editKey()
                 }
             }
         }
+        // MARK: Edit password sheet
         .sheet(
             isPresented: $viewModel.isEditing,
-            onDismiss: {
-                viewModel.getPassword(self.id)
-            }
+            onDismiss: { viewModel.getPassword(self.id) }
         ) {
-            EditPasswordView(
-                password: viewModel.currentPassword ?? PasswordDto()
-            )
+            EditPasswordView(password: viewModel.currentPassword ?? PasswordDto())
         }
+        // MARK: Edit info sheet
         .sheet(
             isPresented: $viewModel.isEditingInfo,
-            onDismiss: {
-                viewModel.getPassword(self.id)
-            }
+            onDismiss: { viewModel.getPassword(self.id) }
         ) {
             EditInfoView(password: viewModel.currentPassword ?? PasswordDto())
         }
@@ -121,6 +87,7 @@ struct PasswordDetailView: View {
         .onDisappear {
             viewModel.visible = false
         }
+        // MARK: Error alert
         .alert(viewModel.error ?? "", isPresented: $viewModel.showError) {
             Button("Ok") {
                 viewModel.showError = false
@@ -128,6 +95,7 @@ struct PasswordDetailView: View {
             }
         }
         
+        // MARK: Unlock/Lock button
         Button(
             viewModel.visible ? "Lock" : "Unlock",
             systemImage: viewModel.visible ? "lock.open" : "lock"
@@ -135,15 +103,11 @@ struct PasswordDetailView: View {
             if viewModel.visible {
                 viewModel.visible = false
             } else {
-                authHelper.authenticate { result in
-                    switch result {
-                    case .success(_):
-                        print("Authenticated")
+                authenticate { success in
+                    if success {
                         viewModel.visible = true
-                    case .failure(let error):
+                    } else {
                         viewModel.visible = false
-                        viewModel.error = error.localizedDescription
-                        viewModel.showError = true
                     }
                 }
             }
@@ -151,87 +115,53 @@ struct PasswordDetailView: View {
         .padding(.top, 8)
     }
     
+    // MARK: Edit key
+    private func editKey() {
+        if viewModel.visible {
+            viewModel.isEditingInfo = true
+        } else {
+            authenticate { success in
+                if success {
+                    viewModel.visible = true
+                    viewModel.isEditingInfo = true
+                } else {
+                    viewModel.visible = false
+                    viewModel.isEditingInfo = false
+                }
+            }
+        }
+    }
+    
+    // MARK: Authenticate at detail context
+    private func authenticate(callback: @escaping (_ success: Bool) -> Void) {
+        authHelper.authenticate { result in
+            switch result {
+            case .success(_):
+                viewModel.showError = false
+                viewModel.error = nil
+                callback(true)
+            case .failure(let error):
+                viewModel.error = error.localizedDescription
+                viewModel.showError = true
+                callback(false)
+            }
+        }
+    }
+    
+    // MARK: Delete modification implementation
     private func handleDelete(for modification: ModificationDto) {
         if viewModel.visible {
             viewModel.removeModification(modification)
         } else {
-            authHelper.authenticate { result in
-                switch result {
-                case .success(_):
+            authenticate { success in
+                if success {
                     viewModel.removeModification(modification)
-                case .failure(let error):
-                    print(error.localizedDescription)
                 }
             }
         }
     }
     
 }
-
-struct PasswordDetailHeadView: View {
-    
-    var password: PasswordDto? = nil
-
-    @Binding
-    var visible: Bool
-    
-    var authHelper: AuthenticationHelper
-    
-    var onEdit: () -> Void
-    
-    var body: some View {
-        VStack {
-            Text(visible ? password?.password ?? "******" : "******")
-                .font(.largeTitle.bold())
-                .frame(maxWidth: .infinity)
-            if visible {
-                HStack {
-                    Button(action: {
-                        onEdit()
-                    }) {
-                        HStack {
-                            Image(systemName: "square.and.pencil")
-                                .frame(height: 24)
-                            Text("Edit")
-                        }
-                        .frame(maxWidth: .infinity, alignment: .center)
-                    }
-                    .buttonStyle(.bordered)
-                    
-                    Button(action: {}) {
-                        HStack {
-                            Image(systemName: "document.on.document")
-                                .frame(height: 24)
-                            Text("Copy")
-                        }
-                        .frame(maxWidth: .infinity, alignment: .center)
-                    }
-                    .buttonStyle(.bordered)
-                }
-            }
-        }
-        .padding(16)
-        .frame(
-            maxWidth: .infinity
-        )
-    }
-}
-
-struct PasswordDetailInfoView: View {
-    
-    var password: PasswordDto? = nil
-    
-    var body: some View {
-        LabeledContent("User", value: password?.user ?? "")
-        let date = formatDate(
-            password?.lastUpdate ?? Date.now,
-            format: "d MMM yyyy, h:mm a"
-        )
-        LabeledContent("Last update", value: date)
-    }
-}
-
-
 
 #Preview {
     PasswordDetailView(id: UUID())

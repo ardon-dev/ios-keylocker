@@ -9,13 +9,16 @@ import SwiftUI
 
 struct NewPasswordView: View {
     
+    private var authHelper: AuthenticationHelper
+    
     @Environment(\.dismiss)
     var dismiss
     
     @ObservedObject
     private var viewModel: NewPasswordViewModel
     
-    private var authHelper: AuthenticationHelper
+    @State
+    var isSecured = false
     
     init() {
         self.viewModel = NewPasswordViewModel(
@@ -26,18 +29,17 @@ struct NewPasswordView: View {
         self.authHelper = AuthenticationHelper()
     }
     
-    @State
-    var isSecured = false
-    
     var body: some View {
-        
         VStack(alignment: .leading) {
+            // MARK: Key form
             Form {
-                
                 VStack(alignment: .leading) {
+                    
+                    // MARK: Title
                     Text("Enter your new Key").font(.title2).bold()
                         .listRowSeparator(.hidden)
                     
+                    // MARK: Alias input
                     Text("Alias").padding(.top, 8)
                     TextField("", text: $viewModel.alias)
                         .textFieldStyle(.roundedBorder)
@@ -46,6 +48,7 @@ struct NewPasswordView: View {
                         .font(.caption)
                         .foregroundColor(.secondary)
                     
+                    // MARK: User or email input
                     Text("User or email").padding(.top, 8)
                     TextField("", text: $viewModel.user)
                         .textFieldStyle(.roundedBorder)
@@ -55,27 +58,15 @@ struct NewPasswordView: View {
                         .font(.caption)
                         .foregroundColor(.secondary)
                    
+                    // MARK: Password input
                     Text("Password").padding(.top, 8)
                     HStack {
-                        ZStack(alignment: .trailing) {
-                            if isSecured {
-                                TextField("", text: $viewModel.password)
-                                    .textFieldStyle(.roundedBorder)
-                            } else {
-                                SecureField("", text: $viewModel.password)
-                                    .textFieldStyle(.roundedBorder)
-                            }
-                            Image(systemName: isSecured ? "eye.slash" : "eye")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 24, height: 24)
-                                .foregroundColor(.gray)
-                                .onTapGesture {
-                                    isSecured = !isSecured
-                                }
-                                .padding(.trailing, 8)
-                        }
+                        SecureTextField(
+                            isSecured: $isSecured,
+                            text: $viewModel.password
+                        )
                       
+                        // Generate random password button
                         Button(action: {
                             let randomPassword = generateRandomPassword()
                             viewModel.password = randomPassword
@@ -87,7 +78,7 @@ struct NewPasswordView: View {
                     }
                 }
               
-                
+                // MARK: Icon selector
                 Section {
                     IconSelectorView(
                         icons: $viewModel.icons,
@@ -98,6 +89,7 @@ struct NewPasswordView: View {
             }
         }
         .toolbar {
+            // MARK: Save key button
             ToolbarItem(placement: .topBarTrailing) {
                 Button("Save", systemImage: "checkmark") {
                     viewModel.insertPassword()
@@ -105,13 +97,17 @@ struct NewPasswordView: View {
                 .disabled(!viewModel.formIsValid)
             }
         }
-        .alert("Exitoso", isPresented: $viewModel.insertPasswordSuccess) {
+        // MARK: Saved key alert
+        .alert("Key saved successfully!", isPresented: $viewModel.insertPasswordSuccess) {
             Button("Ok") {
                 dismiss()
             }
         }
-        .sheet(isPresented: $viewModel.showError) {
-            Text("\($viewModel.insertPasswordError)")
+        // MARK: Save key error alert
+        .alert(viewModel.insertPasswordError ?? "", isPresented: $viewModel.showError) {
+            Button("Ok") {
+                dismiss()
+            }
         }
         .frame(
             maxWidth: .infinity,
@@ -120,60 +116,6 @@ struct NewPasswordView: View {
         )
     }
     
-}
-
-struct IconSelectorView: View {
-    
-    private let columns = [
-        GridItem(.flexible()),
-        GridItem(.flexible()),
-        GridItem(.flexible()),
-        GridItem(.flexible()),
-        GridItem(.flexible())
-    ]
-    
-    @Binding
-    var icons: [String]
-    
-    @Binding
-    var icon: String
-    
-    var body: some View {
-        VStack {
-            Text("Choose an icon")
-                .font(.title2)
-                .bold()
-                .frame(
-                    maxWidth: .infinity,
-                    alignment: .leading
-                )
-            Spacer(minLength: 16)
-            ScrollView {
-                LazyVGrid(columns: columns, spacing: 16) {
-                    ForEach(icons, id: \.self) { item in
-                        let selected = icon == item
-                        if selected {
-                            Button(action: {
-                                icon = item
-                            }) {
-                                Image(item)
-                                    .frame(width: 24, height: 24)
-                            }
-                            .buttonStyle(.borderedProminent)
-                        } else {
-                            Button(action: {
-                                icon = item
-                            }) {
-                                Image(item)
-                                    .frame(width: 24, height: 24)
-                            }
-                            .buttonStyle(.bordered)
-                        }
-                    }
-                }
-            }
-        }
-    }
 }
 
 #Preview {

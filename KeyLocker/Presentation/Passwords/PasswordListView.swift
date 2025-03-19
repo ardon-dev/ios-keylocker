@@ -20,33 +20,24 @@ struct PasswordListView: View {
         NavigationStack {
             List {
                 if viewModel.filteredPasswords.isEmpty {
-                    VStack(alignment: .center) {
-                        Image(systemName: "text.page.badge.magnifyingglass")
-                            .imageScale(.large)
-                            .foregroundColor(.secondary)
-                        Text("No keys")
-                            .font(.callout)
-                            .foregroundColor(.secondary)
-                            .padding(.top, 4)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .listRowSeparator(.hidden)
+                    EmptyContentView(
+                        systemImage: "text.page.badge.magnifyingglass",
+                        text: "No keys found."
+                    )
                 } else {
+                    // MARK: Keys list
                     ForEach(viewModel.filteredPasswords, id: \.id) { password in
-                        Button(action: {}) {
+                        NavigationLink {
+                            PasswordDetailView(id: password.id)
+                        } label: {
                             PasswordItemView(password: password)
                         }
-                        .background(
-                            NavigationLink {
-                                PasswordDetailView(id: password.id)
-                            } label: {
-                                EmptyView()
-                            }
-                        )
                     }
+                    // MARK: Delete key
                     .onDelete(perform: viewModel.removePassword)
                 }
             }
+            // MARK: Searchbar
             .searchable(
                 text: $viewModel.query,
                 placement: .navigationBarDrawer(displayMode: .automatic),
@@ -55,7 +46,9 @@ struct PasswordListView: View {
             .listStyle(.plain)
             .navigationTitle("My keys")
             .navigationBarTitleDisplayMode(.inline)
+            // MARK: Toolbar
             .toolbar {
+                // MARK: Add button
                 ToolbarItem(placement: .topBarTrailing) {
                     NavigationLink {
                         NewPasswordView()
