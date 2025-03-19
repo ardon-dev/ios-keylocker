@@ -32,15 +32,7 @@ class EditInfoViewModel: ObservableObject {
         self.passwordRepository = passwordRepository
         self.alias = alias
         self.user = user
-        self.icons = [
-            "key",
-            "key.2.on.ring.fill",
-            "keyboard",
-            "network.badge.shield.half.filled",
-            "checkmark.seal.fill",
-            "shield.lefthalf.filled.badge.checkmark",
-            "eye"
-        ]
+        self.icons = appIcons()
         self.icon = icon
     }
     

@@ -156,7 +156,7 @@ struct IconSelectorView: View {
                             Button(action: {
                                 icon = item
                             }) {
-                                Image(systemName: item)
+                                Image(item)
                                     .frame(width: 24, height: 24)
                             }
                             .buttonStyle(.borderedProminent)
@@ -164,7 +164,7 @@ struct IconSelectorView: View {
                             Button(action: {
                                 icon = item
                             }) {
-                                Image(systemName: item)
+                                Image(item)
                                     .frame(width: 24, height: 24)
                             }
                             .buttonStyle(.bordered)

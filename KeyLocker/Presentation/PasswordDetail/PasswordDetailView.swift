@@ -33,10 +33,14 @@ struct PasswordDetailView: View {
     var body: some View {
         List {
             Section(
-                header: Label(
-                    "Password",
-                    systemImage: viewModel.currentPassword?.icon ?? "key.fill"
-                )
+                header: Label{
+                    Text(viewModel.currentPassword?.alias ?? "Alias")
+                } icon: {
+                    Image(viewModel.currentPassword?.icon ?? "telegram")
+                        .resizable()
+                        .frame(width: 14, height: 14)
+                        
+                }
             ) {
                 PasswordDetailHeadView(
                     password: viewModel.currentPassword,
@@ -47,7 +51,7 @@ struct PasswordDetailView: View {
             }
             
             Section(
-                header: Label("Information", systemImage: "info.circle.fill")
+                header: Label("Information", systemImage: "info.circle")
             ) {
                 PasswordDetailInfoView(password: viewModel.currentPassword)
             }
@@ -55,7 +59,7 @@ struct PasswordDetailView: View {
             Section(
                 header: Label(
                     "Update history",
-                    systemImage: "arrow.clockwise.circle.fill"
+                    systemImage: "clock.arrow.trianglehead.counterclockwise.rotate.90"
                 )
             ) {
                 ForEach(viewModel.modifications, id: \.id) { mod in
@@ -72,7 +76,6 @@ struct PasswordDetailView: View {
                 }
             }
         }
-        .navigationTitle(viewModel.currentPassword?.alias ?? "")
         .toolbar {
             ToolbarItem {
                 Button("Edit", systemImage: "pencil") {

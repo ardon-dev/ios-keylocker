@@ -13,15 +13,7 @@ class NewPasswordViewModel: ObservableObject {
     
     init(passwordRepository: PasswordRepository) {
         self.passwordRepository = passwordRepository
-        self.icons = [
-            "key",
-            "key.2.on.ring.fill",
-            "keyboard",
-            "network.badge.shield.half.filled",
-            "checkmark.seal.fill",
-            "shield.lefthalf.filled.badge.checkmark",
-            "eye"
-        ]
+        self.icons = appIcons()
         self.icon = icons[0]
     }
     

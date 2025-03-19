@@ -13,12 +13,12 @@ struct PasswordItemView: View {
     
     var body: some View {
         HStack {
-            Image(systemName: password.icon.isEmpty ? "key" : password.icon)
+            Image(password.icon.isEmpty ? "telegram" : password.icon)
                 .imageScale(.large)
             Spacer(minLength: 16)
             VStack {
                 Text(password.alias)
-                    .font(.headline)
+                    .font(.body)
                     .frame(
                         maxWidth: .infinity,
                         alignment: .leading

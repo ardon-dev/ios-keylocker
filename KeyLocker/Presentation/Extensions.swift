@@ -45,3 +45,17 @@ func generateRandomPassword(length: Int = 8) -> String {
     
     return password
 }
+
+func appIcons() -> [String] {
+    return [
+        "apple",
+        "instagram",
+        "telegram",
+        "github",
+        "spotify",
+        "linkedin",
+        "microsoft",
+        "facebook",
+        "google"
+    ]
+}
