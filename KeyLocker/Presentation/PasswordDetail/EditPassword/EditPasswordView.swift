@@ -24,10 +24,7 @@ struct EditPasswordView: View {
                 controller: KeyLockerCDataController.shared
             ),
             passwordRepository: PasswordRepositoryImpl(controller: KeyLockerCDataController.shared),
-            alias: password.alias,
-            password: password.password,
-            user: password.user,
-            icon: password.icon
+            password: password.password
         )
     }
     
@@ -43,23 +40,14 @@ struct EditPasswordView: View {
                 
                 Section {
                     VStack(alignment: .leading) {
-                        /*
-                        Text("Edit your key").font(.title2).bold()
-                        Text("Alias").padding(.top, 8)
-                        TextField("Alias", text: $viewModel.alias)
-                            .textFieldStyle(.roundedBorder)
-                        
-                        Text("User or Email").padding(.top, 8)
-                        TextField("User or email", text: $viewModel.user)
-                            .textFieldStyle(.roundedBorder)
-                        
-                         */
-                        //Text("Password").padding(.top, 8)
-                        HStack {
+                        Text("Password")
+                        HStack(alignment: .center) {
                             if viewModel.isSecured {
-                                TextField("Password", text: $viewModel.password)
+                                TextField("", text: $viewModel.password)
+                                    .textFieldStyle(.roundedBorder)
                             } else {
-                                SecureField("Password", text: $viewModel.password)
+                                SecureField("", text: $viewModel.password)
+                                    .textFieldStyle(.roundedBorder)
                             }
                             Image(systemName: viewModel.isSecured ? "eye.slash" : "eye")
                                 .foregroundColor(.gray)
@@ -67,29 +55,36 @@ struct EditPasswordView: View {
                                     viewModel.isSecured = !viewModel.isSecured
                                 }
                         }
+                      
                     }
                     .frame(
                         maxWidth: .infinity
                     )
                 }
                 
-                /*
                 Section {
-                    IconSelectorView(icons: $viewModel.icons, icon: $viewModel.icon)
+                    Button("Generate", systemImage: "shuffle") {
+                        let randomPassword = generateRandomPassword()
+                        viewModel.password = randomPassword
+                        viewModel.isSecured = true
+                    }
+                    .frame(
+                        maxWidth: .infinity,
+                        alignment: .center
+                    )
                 }
-                 */
-                
-                Button("Save") {
-                    viewModel.addModification(currentPassword: password)
-                }
-                .frame(maxWidth: .infinity, alignment: .center)
-                
             }
         }
         .background(Color(UIColor.systemGray6))
         .alert("Password updated", isPresented: $viewModel.success) {
             Button("Ok") { dismiss() }
         }
+        
+        Button("Save") {
+            viewModel.addModification(currentPassword: password)
+        }
+        .padding(.top, 8)
+        .frame(maxWidth: .infinity, alignment: .center)
     }
 }
 

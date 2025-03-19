@@ -27,10 +27,7 @@ class EditPasswordViewModel: ObservableObject {
     init(
         passwordModificationRepository: PasswordModificationRepository,
         passwordRepository: PasswordRepository,
-        alias: String,
-        password: String,
-        user: String,
-        icon: String
+        password: String
     ) {
         self.password = password
         self.passwordModificationRepository = passwordModificationRepository

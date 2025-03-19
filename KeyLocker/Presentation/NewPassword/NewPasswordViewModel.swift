@@ -44,7 +44,12 @@ class NewPasswordViewModel: ObservableObject {
     
     
     var formIsValid: Bool {
-        !alias.isEmpty && !user.isEmpty && !password.isEmpty && !icon.isEmpty
+        !alias.isEmpty &&
+        alias.count >= 3 &&
+        !user.isEmpty &&
+        user.count >= 3 &&
+        !password.isEmpty &&
+        !icon.isEmpty
     }
     
     func clearData() {

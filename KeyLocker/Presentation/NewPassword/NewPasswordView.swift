@@ -30,26 +30,45 @@ struct NewPasswordView: View {
         
         VStack(alignment: .leading) {
             Form {
-                Text("Enter your new Key").font(.title2).bold()
-                    .listRowSeparator(.hidden)
-                TextField("Alias", text: $viewModel.alias)
-                    .keyboardType(.default)
-                TextField("User or email", text: $viewModel.user)
-                    .autocapitalization(.none)
-                    .keyboardType(.emailAddress)
                 
-                HStack {
-                    if isSecured {
-                        TextField("Password", text: $viewModel.password)
-                    } else {
-                        SecureField("Password", text: $viewModel.password)
-                    }
-                    Image(systemName: isSecured ? "eye.slash" : "eye")
-                        .foregroundColor(.gray)
-                        .onTapGesture {
-                            isSecured = !isSecured
+                VStack(alignment: .leading) {
+                    Text("Enter your new Key").font(.title2).bold()
+                        .listRowSeparator(.hidden)
+                    
+                    Text("Alias").padding(.top, 8)
+                    TextField("", text: $viewModel.alias)
+                        .textFieldStyle(.roundedBorder)
+                        .keyboardType(.default)
+                    Text("Alias must contains at least 3 characters")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                    
+                    Text("User or email").padding(.top, 8)
+                    TextField("", text: $viewModel.user)
+                        .textFieldStyle(.roundedBorder)
+                        .autocapitalization(.none)
+                        .keyboardType(.emailAddress)
+                    Text("User or email must contains at least 3 characters")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                   
+                    Text("Password").padding(.top, 8)
+                    HStack {
+                        if isSecured {
+                            TextField("", text: $viewModel.password)
+                                .textFieldStyle(.roundedBorder)
+                        } else {
+                            SecureField("", text: $viewModel.password)
+                                .textFieldStyle(.roundedBorder)
                         }
+                        Image(systemName: isSecured ? "eye.slash" : "eye")
+                            .foregroundColor(.gray)
+                            .onTapGesture {
+                                isSecured = !isSecured
+                            }
+                    }
                 }
+              
                 
                 Section {
                     IconSelectorView(
