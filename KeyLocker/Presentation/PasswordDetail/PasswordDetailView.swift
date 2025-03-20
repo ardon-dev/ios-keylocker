@@ -61,10 +61,32 @@ struct PasswordDetailView: View {
         }
         // MARK: Toolbar
         .toolbar {
+            // MARK: Edit button
             ToolbarItem {
                 Button("Edit", systemImage: "pencil") {
                     editKey()
                 }
+            }
+            
+            // MARK: Lock/Unlock button
+            ToolbarItem(placement: .status) {
+                Button(
+                    viewModel.visible ? "Lock" : "Unlock",
+                    systemImage: viewModel.visible ? "lock.open" : "lock"
+                ) {
+                    if viewModel.visible {
+                        viewModel.visible = false
+                    } else {
+                        authenticate { success in
+                            if success {
+                                viewModel.visible = true
+                            } else {
+                                viewModel.visible = false
+                            }
+                        }
+                    }
+                }
+                .labelStyle(.titleAndIcon)
             }
         }
         // MARK: Edit password sheet
@@ -94,25 +116,6 @@ struct PasswordDetailView: View {
                 viewModel.error = nil
             }
         }
-        
-        // MARK: Unlock/Lock button
-        Button(
-            viewModel.visible ? "Lock" : "Unlock",
-            systemImage: viewModel.visible ? "lock.open" : "lock"
-        ) {
-            if viewModel.visible {
-                viewModel.visible = false
-            } else {
-                authenticate { success in
-                    if success {
-                        viewModel.visible = true
-                    } else {
-                        viewModel.visible = false
-                    }
-                }
-            }
-        }
-        .padding(.top, 8)
     }
     
     // MARK: Edit key

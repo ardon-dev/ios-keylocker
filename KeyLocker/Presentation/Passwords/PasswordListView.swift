@@ -18,49 +18,68 @@ struct PasswordListView: View {
     
     var body: some View {
         NavigationStack {
-            List {
+            VStack {
                 if viewModel.filteredPasswords.isEmpty {
                     EmptyContentView(
                         systemImage: "text.page.badge.magnifyingglass",
                         text: "No keys found."
                     )
                 } else {
-                    // MARK: Keys list
-                    ForEach(viewModel.filteredPasswords, id: \.id) { password in
-                        NavigationLink {
-                            PasswordDetailView(id: password.id)
-                        } label: {
-                            PasswordItemView(password: password)
+                    List {
+                        // MARK: Keys list
+                        ForEach(
+                            viewModel.filteredPasswords,
+                            id: \.id
+                        ) { password in
+                            NavigationLink {
+                                PasswordDetailView(id: password.id)
+                            } label: {
+                                PasswordItemView(password: password)
+                            }
                         }
+                        // MARK: Delete key
+                        .onDelete(perform: viewModel.removePassword)
                     }
-                    // MARK: Delete key
-                    .onDelete(perform: viewModel.removePassword)
+                    // MARK: Searchbar
+                    .searchable(
+                        text: $viewModel.query,
+                        placement: 
+                                .navigationBarDrawer(displayMode: .automatic),
+                        prompt: Text("Search key")
+                    )
+                    .listStyle(.sidebar)
                 }
+                
+                // MARK: Add key button
+                
             }
-            // MARK: Searchbar
-            .searchable(
-                text: $viewModel.query,
-                placement: .navigationBarDrawer(displayMode: .automatic),
-                prompt: Text("Search key")
-            )
-            .listStyle(.plain)
+            .onAppear {
+                viewModel.getPasswords()
+            }
             .navigationTitle("My keys")
             .navigationBarTitleDisplayMode(.inline)
             // MARK: Toolbar
             .toolbar {
-                // MARK: Add button
+                // MARK: Settings button
                 ToolbarItem(placement: .topBarTrailing) {
                     NavigationLink {
-                        NewPasswordView()
+                        
                     } label: {
-                        Button("Add", systemImage: "plus") {
+                        Button("Settings", systemImage: "slider.horizontal.3") {
                             
                         }
                     }
                 }
-            }
-            .onAppear {
-                viewModel.getPasswords()
+                
+                ToolbarItem(placement: .status) {
+                    NavigationLink {
+                        NewPasswordView()
+                    } label: {
+                        Label("Add key", systemImage: "plus")
+                            .labelStyle(.titleAndIcon)
+                            .fixedSize()
+                    }
+                }
             }
         }
         .frame(

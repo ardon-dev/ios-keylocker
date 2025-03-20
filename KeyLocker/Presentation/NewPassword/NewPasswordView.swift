@@ -90,10 +90,11 @@ struct NewPasswordView: View {
         }
         .toolbar {
             // MARK: Save key button
-            ToolbarItem(placement: .topBarTrailing) {
-                Button("Save", systemImage: "checkmark") {
+            ToolbarItem(placement: .status) {
+                Button("Save") {
                     saveKey()
                 }
+                .labelStyle(.titleAndIcon)
                 .disabled(!viewModel.formIsValid)
             }
         }

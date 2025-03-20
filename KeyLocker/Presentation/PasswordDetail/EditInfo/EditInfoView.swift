@@ -28,31 +28,37 @@ struct EditInfoView: View {
     }
     
     var body: some View {
-        VStack {
-            Capsule()
-                   .fill(Color.secondary)
-                   .frame(width: 35, height: 5)
-                   .frame(maxWidth: .infinity, alignment: .center)
-                   .padding(.top, 16)
-            
-            // MARK: Edit form
-            Form {
-                // Sections
-                InfoSection()
-                IconSelectorSection()
+        NavigationView {
+            VStack {
+               
+                Capsule()
+                       .fill(Color.secondary)
+                       .frame(width: 35, height: 5)
+                       .frame(maxWidth: .infinity, alignment: .center)
+                       .padding(.top, 16)
                 
-                // MARK: Save button
-                Button("Save") {
-                    viewModel.updatePassword(password: password)
+                // MARK: Edit form
+                Form {
+                    // Sections
+                    InfoSection()
+                    IconSelectorSection()
                 }
-                .frame(maxWidth: .infinity, alignment: .center)
-                
             }
-        }
-        .background(Color(UIColor.systemGray6))
-        // MARK: Success update alert
-        .alert("Password updated", isPresented: $viewModel.success) {
-            Button("Ok") { dismiss() }
+            .background(Color(UIColor.systemGray6))
+            // MARK: Success update alert
+            .alert("Password updated", isPresented: $viewModel.success) {
+                Button("Ok") { dismiss() }
+            }
+            // MARK: Toolbar
+            .toolbar {
+                // MARK: Save button
+                ToolbarItem(placement: .bottomBar) {
+                    Button("Save") {
+                        viewModel.updatePassword(password: password)
+                    }
+                    .labelStyle(.titleAndIcon)
+                }
+            }
         }
     }
     
