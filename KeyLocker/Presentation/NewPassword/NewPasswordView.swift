@@ -92,7 +92,7 @@ struct NewPasswordView: View {
             // MARK: Save key button
             ToolbarItem(placement: .topBarTrailing) {
                 Button("Save", systemImage: "checkmark") {
-                    viewModel.insertPassword()
+                    saveKey()
                 }
                 .disabled(!viewModel.formIsValid)
             }
@@ -105,15 +105,28 @@ struct NewPasswordView: View {
         }
         // MARK: Save key error alert
         .alert(viewModel.insertPasswordError ?? "", isPresented: $viewModel.showError) {
-            Button("Ok") {
-                dismiss()
-            }
+            Button("Ok") { }
         }
         .frame(
             maxWidth: .infinity,
             maxHeight: .infinity,
             alignment: .top
         )
+    }
+    
+    // MARK: Save key with authentication
+    private func saveKey() {
+        authHelper.authenticate { result in
+            switch result {
+            case .success(_):
+                viewModel.showError = false
+                viewModel.insertPasswordError = nil
+                viewModel.insertPassword()
+            case .failure(let error):
+                viewModel.insertPasswordError = error.localizedDescription
+                viewModel.showError = true
+            }
+        }
     }
     
 }
