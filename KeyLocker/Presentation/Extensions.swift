@@ -71,6 +71,10 @@ func openWeb(url: String) {
     }
 }
 
+func getAppVersion() -> String {
+    return Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? ""
+}
+
 /* User defaults */
 
 let KEY_FACEID_ENABLED = "face_id_enabled"

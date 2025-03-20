@@ -14,7 +14,7 @@ class AuthenticationHelper {
     var error: NSError?
     
     func authenticate(closure: @escaping (Result<Bool, Error>) -> Void) {
-        let faceIdEnabled = readBoolDefault(KEY_FACEID_ENABLED) ?? false
+        let faceIdEnabled = readBoolDefault(KEY_FACEID_ENABLED)
         print("enabled: \(faceIdEnabled)")
         let reason = "Authenticate to unlock your Key"
         

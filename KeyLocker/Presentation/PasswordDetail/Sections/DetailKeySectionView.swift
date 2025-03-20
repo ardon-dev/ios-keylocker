@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import UIKit
 
 struct DetailKeySectionView: View {
     
@@ -52,7 +53,10 @@ struct DetailKeySectionView: View {
                         .buttonStyle(.bordered)
                         
                         // MARK: Copy action
-                        Button(action: {}) {
+                        Button(action: {
+                            UIPasteboard.general.string = password
+                            vibrate(type: .success)
+                        }) {
                             HStack {
                                 Image(systemName: "document.on.document")
                                     .frame(height: 24)
@@ -70,13 +74,19 @@ struct DetailKeySectionView: View {
             )
         }
     }
+    
+    func vibrate(type: UINotificationFeedbackGenerator.FeedbackType) {
+        let generator = UINotificationFeedbackGenerator()
+        generator.notificationOccurred(type)
+    }
+    
 }
 
 #Preview {
     
     @Previewable
     @State
-    var visible: Bool = false
+    var visible: Bool = true
     
     DetailKeySectionView(
         visible: $visible,

@@ -15,7 +15,7 @@ struct SettingsView: View {
     private var authHelper = AuthenticationHelper()
     
     init() {
-        self.isOn = readBoolDefault(KEY_FACEID_ENABLED) ?? false
+        self.isOn = readBoolDefault(KEY_FACEID_ENABLED)
     }
     
     var body: some View {
@@ -23,7 +23,7 @@ struct SettingsView: View {
             
             Section(header: Label("About", systemImage: "info.circle")) {
                 VStack(alignment: .center) {
-                    Image(.icLogo48)
+                    Image(.keylocker)
                         .resizable()
                         .scaledToFit()
                         .frame(
@@ -32,11 +32,11 @@ struct SettingsView: View {
                         )
                     Text("KeyLocker")
                         .font(.title)
-                        .bold()
-                    Text("v1.0")
+                    Text("v\(getAppVersion())")
                         .font(.caption)
                         .foregroundColor(.secondary)
                     Text("This app is developed by ArdonDev.\nYou can check my profile in LinkedIn and Github.")
+                        .padding(.top, 8)
                         .multilineTextAlignment(.center)
                     
                     HStack {
@@ -50,6 +50,7 @@ struct SettingsView: View {
                         .buttonStyle(.bordered)
                     }
                     .padding(.top, 16)
+                    .padding(.bottom, 8)
                 }
                 .frame(maxWidth: .infinity)
                 
