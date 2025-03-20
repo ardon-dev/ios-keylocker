@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 func formatDate(_ date: Date, format: String) -> String {
     let dateFormatter = DateFormatter()
@@ -58,4 +59,26 @@ func appIcons() -> [String] {
         "facebook",
         "google"
     ]
+}
+
+func openWeb(url: String) {
+    if let url = URL(string: url) {
+        if UIApplication.shared.canOpenURL(url) {
+            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+        } else {
+            print("Can't open URL.")
+        }
+    }
+}
+
+/* User defaults */
+
+let KEY_FACEID_ENABLED = "face_id_enabled"
+
+func saveBoolDefault(_ value: Bool, key: String) {
+    UserDefaults.standard.set(value, forKey: key)
+}
+
+func readBoolDefault(_ key: String) -> Bool? {
+    return UserDefaults.standard.bool(forKey: key)
 }

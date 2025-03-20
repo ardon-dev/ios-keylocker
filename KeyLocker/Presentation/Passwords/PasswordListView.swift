@@ -63,10 +63,10 @@ struct PasswordListView: View {
                 // MARK: Settings button
                 ToolbarItem(placement: .topBarTrailing) {
                     NavigationLink {
-                        
+                        SettingsView()
                     } label: {
                         Button("Settings", systemImage: "slider.horizontal.3") {
-                            
+                           
                         }
                     }
                 }
