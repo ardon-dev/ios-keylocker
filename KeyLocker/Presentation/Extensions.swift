@@ -79,6 +79,12 @@ func saveBoolDefault(_ value: Bool, key: String) {
     UserDefaults.standard.set(value, forKey: key)
 }
 
-func readBoolDefault(_ key: String) -> Bool? {
+func readBoolDefault(_ key: String) -> Bool {
     return UserDefaults.standard.bool(forKey: key)
+}
+
+extension UserDefaults {
+    func valueExists(forKey key: String) -> Bool {
+        return object(forKey: key) != nil
+    }
 }
